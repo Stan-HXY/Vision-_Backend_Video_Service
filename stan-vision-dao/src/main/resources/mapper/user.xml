@@ -60,4 +60,52 @@
         where userID = #{userID}
     </select>
 
+    <update id="updateUsers" parameterType="com.stan.vision.domain.UserInfo" useGeneratedKeys="true" keyProperty="id">
+        update
+        t_user
+        set
+        <if test="phone != null and phone != '' ">
+            phone = #{phone},
+        </if>
+        <if test="email != null and email != '' ">
+            email = #{email},
+        </if>
+        <if test="password != null and password != '' ">
+            password = #{password},
+        </if>
+        updateTime = #{updateTime}
+        where
+        id = #{id}
+    </update>
+    
+    <update id="updateUserInfos" parameterType="com.stan.vision.domain.UserInfo" useGeneratedKeys="true" keyProperty="id">
+        update
+        t_user_info
+        set
+            <if test="nickname != null and nickname != '' ">
+                nickname = #{nickname},
+            </if>
+            <if test="avatar != null and avatar != '' ">
+                avatar = #{avatar},
+            </if>
+            <if test="sign != null and sign != '' ">
+                sign = #{sign},
+            </if>
+            <if test="gender != null and gender != '' ">
+                gender = #{gender},
+            </if>
+            <if test="birthday != null and birthday != '' ">
+                birthday = #{birthday},
+            </if>
+            updateTime = #{updateTime}
+        where
+            userID = #{userID}
+    </update>
+
+    <select id="getUserByPhoneOrEmail" parameterType="java.lang.String" resultType="com.stan.vision.domain.User">
+        select *
+        from t_user
+        where phone = #{phone} OR email = #{email}
+    </select>
+
 </mapper>

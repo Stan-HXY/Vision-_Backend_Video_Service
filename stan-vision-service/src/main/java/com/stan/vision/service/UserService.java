@@ -57,20 +57,24 @@ public class UserService {
         userDAO.addUserInfo(userInfo);
 
         return;
-
     }
 
     public User getUserByPhone(String phone){
         return userDAO.getUserByPhone(phone);
     }
 
+    public User getUserByPhoneOrEmail(String phone, String email) {
+        return userDAO.getUserByPhoneOrEmail(phone, email);
+    }
+
     // return a token
     public String login(User user) throws Exception{
-        String phone = user.getPhone();
-        if(StringUtils.isNullOrEmpty(phone)){
-            throw new ConditionException("Phone number cannot be empty!");
+        String phone = user.getPhone() == null ? "" : user.getPhone();
+        String email = user.getEmail() == null ? "" : user.getEmail();
+        if(StringUtils.isNullOrEmpty(phone) && StringUtils.isNullOrEmpty(email)){
+            throw new ConditionException("Invalid Parameter!");
         }
-        User dbUser = this.getUserByPhone(phone);
+        User dbUser = this.getUserByPhoneOrEmail(phone, email);
         if(dbUser == null){
             throw new ConditionException("This user is not exist!");
         }
@@ -99,5 +103,26 @@ public class UserService {
         UserInfo userInfo = userDAO.getUserInfoByUserID(userID);
         user.setUserInfo(userInfo);
         return user;
+    }
+
+    public void updateUsers(User user) throws Exception{
+        Long id = user.getId();
+        User dbUser = userDAO.getUserByID(id);
+        if(dbUser == null){
+            throw new ConditionException("User not exist!");
+        }
+        if(!StringUtils.isNullOrEmpty(user.getPassword())){
+            String rawPassword = RSAUtil.decrypt(user.getPassword());
+            String md5Password = MD5Util.sign(rawPassword, dbUser.getSalt(), "UTF-8");
+            user.setPassword(md5Password);
+        }
+        user.setUpdateTime(new Date());
+        userDAO.updateUsers(user);
+        return;
+    }
+
+    public void updateUserInfos(UserInfo userInfo) {
+        userInfo.setUpdateTime(new Date());
+        userDAO.updateUserInfos(userInfo);
     }
 }

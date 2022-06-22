@@ -3,6 +3,7 @@ package com.stan.vision.api;
 import com.stan.vision.api.support.UserSupport;
 import com.stan.vision.domain.JsonResponse;
 import com.stan.vision.domain.User;
+import com.stan.vision.domain.UserInfo;
 import com.stan.vision.service.UserService;
 import com.stan.vision.service.util.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +37,49 @@ public class UserAPI {
         return JsonResponse.success();
     }
 
-    @PostMapping("/users-tokens")
+    @PostMapping("/user-tokens")
     public JsonResponse<String> login(@RequestBody User user) throws Exception{
         String token = userService.login(user);
         return new JsonResponse<>(token);
     }
 
+    @PutMapping("/users")
+    public JsonResponse<String> updateUsers(@RequestBody User user) throws Exception{
+        Long userID = userSupport.getCurrentUserID();
+        user.setId(userID);
+        userService.updateUsers(user);
+        return JsonResponse.success();
+    }
+
+    @PutMapping("/user-infos")
+    public JsonResponse<String> updateUserInfos(@RequestBody UserInfo userInfo ){
+        Long userID = userSupport.getCurrentUserID();
+        userInfo.setUserID(userID);
+        userService.updateUserInfos(userInfo);
+        return JsonResponse.success();
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
