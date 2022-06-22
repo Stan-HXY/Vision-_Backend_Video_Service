@@ -47,5 +47,17 @@
                 #{createTime}
         )
     </insert>
+    
+    <select id="getUserByID" parameterType="java.lang.Long" resultType="com.stan.vision.domain.User">
+        select *
+        from t_user
+        where id = #{id}
+    </select>
+    
+    <select id="getUserInfoByUserID" parameterType="java.lang.Long" resultType="com.stan.vision.domain.UserInfo">
+        select *
+        from t_user_info
+        where userID = #{userID}
+    </select>
 
 </mapper>

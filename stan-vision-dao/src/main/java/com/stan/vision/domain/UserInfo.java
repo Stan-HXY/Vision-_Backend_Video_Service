@@ -1,4 +1,4 @@
-package com.stan.vision.domain.exception;
+package com.stan.vision.domain;
 
 import java.util.Date;
 

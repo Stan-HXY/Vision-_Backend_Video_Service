@@ -1,5 +1,6 @@
 package com.stan.vision.api;
 
+import com.stan.vision.api.support.UserSupport;
 import com.stan.vision.domain.JsonResponse;
 import com.stan.vision.domain.User;
 import com.stan.vision.service.UserService;
@@ -13,6 +14,16 @@ public class UserAPI {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserSupport userSupport;
+
+    @GetMapping("/users")
+    public JsonResponse<User> getUserInfo(){
+        Long userID = userSupport.getCurrentUserID();
+        User user = userService.getUserInfo(userID);
+        return new JsonResponse<>(user);
+    }
+
     @GetMapping("/rsa-pks")
     public JsonResponse<String> getRsaPublicKey(){
         String pk = RSAUtil.getPublicKeyStr();
@@ -25,8 +36,8 @@ public class UserAPI {
         return JsonResponse.success();
     }
 
-    @PostMapping("/user-tokens")
-    public JsonResponse<String> login(@RequestBody User user){
+    @PostMapping("/users-tokens")
+    public JsonResponse<String> login(@RequestBody User user) throws Exception{
         String token = userService.login(user);
         return new JsonResponse<>(token);
     }

@@ -5,11 +5,10 @@ import com.stan.vision.dao.UserDAO;
 import com.stan.vision.domain.User;
 import com.stan.vision.domain.constant.UserConstant;
 import com.stan.vision.domain.exception.ConditionException;
-import com.stan.vision.domain.exception.UserInfo;
+import com.stan.vision.domain.UserInfo;
 import com.stan.vision.service.util.MD5Util;
 import com.stan.vision.service.util.RSAUtil;
 import com.stan.vision.service.util.TokenUtil;
-import jdk.nashorn.internal.parser.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,7 +65,7 @@ public class UserService {
     }
 
     // return a token
-    public String login(User user) {
+    public String login(User user) throws Exception{
         String phone = user.getPhone();
         if(StringUtils.isNullOrEmpty(phone)){
             throw new ConditionException("Phone number cannot be empty!");
@@ -88,10 +87,17 @@ public class UserService {
         String salt = dbUser.getSalt();
         String md5Password = MD5Util.sign(rawPassword, salt, "UTF-8");
 
-        if(md5Password.equals(dbUser.getPassword())){
+        if(!md5Password.equals(dbUser.getPassword())){
             throw new ConditionException("Wrong password!");
         }
-        TokenUtil tokenUtil = new TokenUtil();
-        return tokenUtil.generateToken(dbUser.getId());
+
+        return TokenUtil.generateToken(dbUser.getId());
+    }
+
+    public User getUserInfo(Long userID) {
+        User user = userDAO.getUserByID(userID);
+        UserInfo userInfo = userDAO.getUserInfoByUserID(userID);
+        user.setUserInfo(userInfo);
+        return user;
     }
 }
