@@ -3,6 +3,7 @@ package com.stan.vision.dao;
 import com.stan.vision.domain.User;
 import com.stan.vision.domain.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserDAO {
@@ -21,5 +22,5 @@ public interface UserDAO {
 
     Integer updateUserInfos(UserInfo userInfo);
 
-    User getUserByPhoneOrEmail(String phone, String email);
+    User getUserByPhoneOrEmail(@Param("phone") String phone, @Param("email") String email);
 }

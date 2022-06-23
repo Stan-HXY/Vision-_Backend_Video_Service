@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD MAPPER 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stan.vision.dao.UserFollowingDAO">
+    <delete id="deleteUserFollowing" >
+        delete from t_user_following
+        where userID = #{userID} and followingID = #{followingID}
+    </delete>
+    
+    <insert id="addUserFollowing" parameterType="com.stan.vision.domain.UserFollowing">
+        insert into
+            t_user_following(
+                userID,
+                followingID,
+                groupID,
+                createTime
+            )
+        values(
+                #{userID},
+                #{followingID},
+                #{groupID},
+                #{createTime}
+              )
+    </insert>
+</mapper>
