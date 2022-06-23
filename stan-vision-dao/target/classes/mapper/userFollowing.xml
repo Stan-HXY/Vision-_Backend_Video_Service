@@ -21,4 +21,27 @@
                 #{createTime}
               )
     </insert>
+    
+    <select id="getUserFollowings" parameterType="java.lang.Long" resultType="com.stan.vision.domain.UserFollowing">
+        select *
+        from t_user_following
+        where userID = #{userID}
+    </select>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

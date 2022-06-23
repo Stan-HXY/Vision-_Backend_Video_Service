@@ -12,4 +12,11 @@
         from t_following_group
         where id = #{id}
     </select>
+    
+    <select id="getByUserID" parameterType="java.lang.Long" resultType="com.stan.vision.domain.FollowingGroup">
+        select *
+        from t_following_group
+        where
+            userID = #{userID} OR `type` in ('0', '1', '2')
+    </select>
 </mapper>

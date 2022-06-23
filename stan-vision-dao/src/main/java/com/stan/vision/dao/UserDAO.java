@@ -5,6 +5,9 @@ import com.stan.vision.domain.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+import java.util.Set;
+
 @Mapper
 public interface UserDAO {
 
@@ -23,4 +26,6 @@ public interface UserDAO {
     Integer updateUserInfos(UserInfo userInfo);
 
     User getUserByPhoneOrEmail(@Param("phone") String phone, @Param("email") String email);
+
+    List<UserInfo> getUserInfoByUserIDs(Set<Long> userIDList);
 }

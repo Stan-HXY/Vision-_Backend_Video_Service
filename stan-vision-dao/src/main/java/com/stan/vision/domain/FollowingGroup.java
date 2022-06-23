@@ -1,6 +1,7 @@
 package com.stan.vision.domain;
 
 import java.util.Date;
+import java.util.List;
 
 public class FollowingGroup {
 
@@ -10,6 +11,8 @@ public class FollowingGroup {
     private String type;
     private Date createTime;
     private Date updateTime;
+    private List<UserInfo> followingUserInfoList;
+
 
     public Long getId() {
         return id;
@@ -57,5 +60,13 @@ public class FollowingGroup {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public List<UserInfo> getFollowingUserInfoList() {
+        return followingUserInfoList;
+    }
+
+    public void setFollowingUserInfoList(List<UserInfo> followingUserInfoList) {
+        this.followingUserInfoList = followingUserInfoList;
     }
 }

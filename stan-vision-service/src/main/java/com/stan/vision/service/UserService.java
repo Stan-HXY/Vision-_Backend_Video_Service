@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -128,5 +130,9 @@ public class UserService {
 
     public User getUserByID(Long followingID) {
         return userDAO.getUserByID(followingID);
+    }
+
+    public List<UserInfo> getUserInfoByUserIDs(Set<Long> userIDList) {
+        return userDAO.getUserInfoByUserIDs(userIDList);
     }
 }
