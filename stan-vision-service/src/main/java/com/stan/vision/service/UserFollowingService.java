@@ -97,10 +97,60 @@ public class UserFollowingService {
     }
 
 
+    /* 1. get Fans List
+     * 2. query userInfo by userID in Fans List
+     * 3. Check whether this user followed this fan(互粉状态要在前端有展示)
+     * */
+    public List<UserFollowing> getUserFans(Long userID){
+        List<UserFollowing> fanList = userFollowingDAO.getUserFans(userID);
+        Set<Long> fanIDSet = fanList.stream().map(UserFollowing::getUserID).collect(Collectors.toSet());
+        List<UserInfo> userInfoList = new ArrayList<>();
+        if(fanIDSet.size() > 0){
+            userInfoList = userService.getUserInfoByUserIDs(fanIDSet);
+        }
+        List<UserFollowing> followingList = userFollowingDAO.getUserFollowings(userID);
+        for(UserFollowing fan : fanList){
+            for(UserInfo userInfo : userInfoList){
+                if(fan.getUserID().equals(userInfo.getUserID())){
+                    userInfo.setFollowed(false);
+                    fan.setUserInfo(userInfo);
+                }
+            }
+            for(UserFollowing following : followingList){
+                if(following.getFollowingID().equals(fan.getUserID())){
+                    fan.getUserInfo().setFollowed(true);
+                }
+            }
+        }
+        return fanList;
+    }
 
 
+    public Long addUserFollowingsGroup(FollowingGroup followingGroup) {
+        followingGroup.setCreateTime(new Date());
+        followingGroup.setType(UserConstant.USER_FOLLOWING_GROUP_TYPE_USER);
+        followingGroupService.addFollowingGroup(followingGroup);
+        return followingGroup.getId();
+    }
 
 
+    public List<FollowingGroup> getUserFollowingGroups(Long userID) {
+        return followingGroupService.getUserFollowingGroups(userID);
+    }
+
+
+    public List<UserInfo> checkFollowingStatus(List<UserInfo> userInfoList, Long userID){
+        List<UserFollowing> userFollowingList = userFollowingDAO.getUserFollowings(userID);
+        for(UserInfo userInfo : userInfoList){
+            userInfo.setFollowed(false);
+            for(UserFollowing userFollowing : userFollowingList){
+                if(userFollowing.getFollowingID().equals(userInfo.getUserID())){
+                    userInfo.setFollowed(true);
+                }
+            }
+        }
+        return userInfoList;
+    }
 }
 
 

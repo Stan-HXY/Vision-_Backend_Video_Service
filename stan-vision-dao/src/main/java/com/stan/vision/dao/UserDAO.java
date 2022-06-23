@@ -1,11 +1,13 @@
 package com.stan.vision.dao;
 
+import com.alibaba.fastjson.JSONObject;
 import com.stan.vision.domain.User;
 import com.stan.vision.domain.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Mapper
@@ -28,4 +30,8 @@ public interface UserDAO {
     User getUserByPhoneOrEmail(@Param("phone") String phone, @Param("email") String email);
 
     List<UserInfo> getUserInfoByUserIDs(Set<Long> userIDList);
+
+    Integer pageCountUserInfos(Map<String, Object> params);
+
+    List<UserInfo> pageListUserInfos(JSONObject params);
 }

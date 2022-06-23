@@ -1,7 +1,9 @@
 package com.stan.vision.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mysql.cj.util.StringUtils;
 import com.stan.vision.dao.UserDAO;
+import com.stan.vision.domain.PageResult;
 import com.stan.vision.domain.User;
 import com.stan.vision.domain.constant.UserConstant;
 import com.stan.vision.domain.exception.ConditionException;
@@ -12,6 +14,7 @@ import com.stan.vision.service.util.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -134,5 +137,18 @@ public class UserService {
 
     public List<UserInfo> getUserInfoByUserIDs(Set<Long> userIDList) {
         return userDAO.getUserInfoByUserIDs(userIDList);
+    }
+
+    public PageResult<UserInfo> pageListUserInfos(JSONObject params) {
+        Integer no = params.getInteger("no");
+        Integer size = params.getInteger("size");
+        params.put("start", (no-1)*size);
+        params.put("limit", size);
+        Integer total = userDAO.pageCountUserInfos(params);
+        List<UserInfo> list = new ArrayList<>();
+        if(total > 0){
+            list = userDAO.pageListUserInfos(params);
+        }
+        return new PageResult<>(total, list);
     }
 }

@@ -1,13 +1,18 @@
 package com.stan.vision.api;
 
+import com.alibaba.fastjson.JSONObject;
 import com.stan.vision.api.support.UserSupport;
 import com.stan.vision.domain.JsonResponse;
+import com.stan.vision.domain.PageResult;
 import com.stan.vision.domain.User;
 import com.stan.vision.domain.UserInfo;
+import com.stan.vision.service.UserFollowingService;
 import com.stan.vision.service.UserService;
 import com.stan.vision.service.util.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class UserAPI {
@@ -17,6 +22,9 @@ public class UserAPI {
 
     @Autowired
     private UserSupport userSupport;
+
+    @Autowired
+    private UserFollowingService userFollowingService;
 
     @GetMapping("/users")
     public JsonResponse<User> getUserInfo(){
@@ -59,6 +67,26 @@ public class UserAPI {
         return JsonResponse.success();
     }
 
+    /* 分页查询
+    @no : page number
+    @size : page display size
+     */
+    @GetMapping("/user-infos")
+    public JsonResponse<PageResult<UserInfo>> pageListUserInfos(@RequestParam Integer no, @RequestParam Integer size, String nickname){
+        Long userID = userSupport.getCurrentUserID();
+        JSONObject params = new JSONObject();
+        params.put("no", no);
+        params.put("size", size);
+        params.put("nickname", nickname);
+        params.put("userID", userID);
+
+        PageResult<UserInfo> result = userService.pageListUserInfos(params);
+        if(result.getTotal() > 0){
+            List<UserInfo> checkedUserInfoList = userFollowingService.checkFollowingStatus(result.getList(), userID);
+            result.setList(checkedUserInfoList);
+        }
+        return new JsonResponse<>(result);
+    }
 }
 
 
